@@ -4,8 +4,95 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Culture Play</title>
+    <script type="application/manifest+json" id="manifest">
+{
+  "name": "Culture Play",
+  "short_name": "CulturePlay",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#5D5CDE",
+  "icons": [
+    {
+      "src": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIiBmaWxsPSIjNUQ1Q0RFIj48cGF0aCBkPSJNMzMyLjMgNDI2LjRjLTkuMyA5LjMtMjQuNC05LjgtMTk0LjctMTgwLjEtMTcwLjMtMTcwLjMtMTg5LjQtMTg1LjQtMTgwLjEtMTk0LjcgNS40LTUuNCAxMy4xLTcuMiAyNi4xLTcuMiAzNi44IDAgOTguNyAxOCAxNTUuMiA3NC42IDU2LjUgNTYuNSA3NC42IDExOC41IDc0LjYgMTU1LjIgLjEgMTMtMS43IDIwLjctNy4xIDI2LjF6bS00OS4xLTI1NC42Yy0zMC45LTMwLjktMzYuMy0zNi4zLTM0LjctMTU3LjIgMCAwIDEzNS45IDEzNS45IDEzNS45IDEzNS45LTEyMSAxLjYtMTI2LjQtMy44LTE1Ny40LTM0Ljd6bTE1Ny40IDM0LjdjMCAyMi44LTcuNiA0Ni44LTIyLjUgNzEuOEMzOTMuOCAzMTQgMzgyLjMgMzI1LjQgMzQ3IDM2MC43IDMyNS40IDM4Mi4zIDMxNCAzOTMuOCAyNzcuMyA0MTguMWMtMjUgMTQuOS00OS4xIDIyLjUtNzEuOCAyMi41LTE5LjIgMC0zNS4zLTUuMS00Ny42LTE3LjQtOC44LTguOC0xNC42LTIwLjQtMTcuMi0zNC41IDExNS44LTE4LjkgMTk5LjctMTAyLjggMjE4LjYtMjE4LjYgMTQuMSAyLjYgMjUuNiA4LjQgMzQuNSAxNy4yIDEyLjMgMTIuMyAxNy40IDI4LjMgMTcuNCA0Ny42eiI+PC9wYXRoPjwvc3ZnPg==",
+      "sizes": "192x192",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIiBmaWxsPSIjNUQ1Q0RFIj48cGF0aCBkPSJNMzMyLjMgNDI2LjRjLTkuMyA5LjMtMjQuNC05LjgtMTk0LjctMTgwLjEtMTcwLjMtMTcwLjMtMTg5LjQtMTg1LjQtMTgwLjEtMTk0LjcgNS40LTUuNCAxMy4xLTcuMiAyNi4xLTcuMiAzNi44IDAgOTguNyAxOCAxNTUuMiA3NC42IDU2LjUgNTYuNSA3NC42IDExOC41IDc0LjYgMTU1LjIgLjEgMTMtMS43IDIwLjctNy4xIDI2LjF6bS00OS4xLTI1NC42Yy0zMC45LTMwLjktMzYuMy0zNi4zLTM0LjctMTU3LjIgMCAwIDEzNS45IDEzNS45IDEzNS45IDEzNS45LTEyMSAxLjYtMTI2LjQtMy44LTE1Ny40LTM0Ljd6bTE1Ny40IDM0LjdjMCAyMi44LTcuNiA0Ni44LTIyLjUgNzEuOEMzOTMuOCAzMTQgMzgyLjMgMzI1LjQgMzQ3IDM2MC43IDMyNS40IDM4Mi4zIDMxNCAzOTMuOCAyNzcuMyA0MTguMWMtMjUgMTQuOS00OS4xIDIyLjUtNzEuOCAyMi41LTE5LjIgMC0zNS4zLTUuMS00Ny42LTE3LjQtOC44LTguOC0xNC42LTIwLjQtMTcuMi0zNC41IDExNS44LTE4LjkgMTk5LjctMTAyLjggMjE4LjYtMjE4LjYgMTQuMSAyLjYgMjUuNiA4LjQgMzQuNSAxNy4yIDEyLjMgMTIuMyAxNy40IDI4LjMgMTcuNCA0Ny42eiI+PC9wYXRoPjwvc3ZnPg==",
+      "sizes": "512x512",
+      "type": "image/svg+xml"
+    }
+  ]
+}
+</script>
+<link rel="manifest" href="#manifest">
+    <meta name="theme-color" content="#5D5CDE">
+    <link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIiBmaWxsPSIjNUQ1Q0RFIj48cGF0aCBkPSJNMzMyLjMgNDI2LjRjLTkuMyA5LjMtMjQuNC05LjgtMTk0LjctMTgwLjEtMTcwLjMtMTcwLjMtMTg5LjQtMTg1LjQtMTgwLjEtMTk0LjcgNS40LTUuNCAxMy4xLTcuMiAyNi4xLTcuMiAzNi44IDAgOTguNyAxOCAxNTUuMiA3NC42IDU2LjUgNTYuNSA3NC42IDExOC41IDc0LjYgMTU1LjIgLjEgMTMtMS43IDIwLjctNy4xIDI2LjF6bS00OS4xLTI1NC42Yy0zMC45LTMwLjktMzYuMy0zNi4zLTM0LjctMTU3LjIgMCAwIDEzNS45IDEzNS45IDEzNS45IDEzNS45LTEyMSAxLjYtMTI2LjQtMy44LTE1Ny40LTM0Ljd6bTE1Ny40IDM0LjdjMCAyMi44LTcuNiA0Ni44LTIyLjUgNzEuOEMzOTMuOCAzMTQgMzgyLjMgMzI1LjQgMzQ3IDM2MC43IDMyNS40IDM4Mi4zIDMxNCAzOTMuOCAyNzcuMyA0MTguMWMtMjUgMTQuOS00OS4xIDIyLjUtNzEuOCAyMi41LTE5LjIgMC0zNS4zLTUuMS00Ny42LTE3LjQtOC44LTguOC0xNC42LTIwLjQtMTcuMi0zNC41IDExNS44LTE4LjkgMTk5LjctMTAyLjggMjE4LjYtMjE4LjYgMTQuMSAyLjYgMjUuNiA4LjQgMzQuNSAxNy4yIDEyLjMgMTIuMyAxNy40IDI4LjMgMTcuNCA0Ny42eiI+PC9wYXRoPjwvc3ZnPg==" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIiBmaWxsPSIjNUQ1Q0RFIj48cGF0aCBkPSJNMzMyLjMgNDI2LjRjLTkuMyA5LjMtMjQuNC05LjgtMTk0LjctMTgwLjEtMTcwLjMtMTcwLjMtMTg5LjQtMTg1LjQtMTgwLjEtMTk0LjcgNS40LTUuNCAxMy4xLTcuMiAyNi4xLTcuMiAzNi44IDAgOTguNyAxOCAxNTUuMiA3NC42IDU2LjUgNTYuNSA3NC42IDExOC41IDc0LjYgMTU1LjIgLjEgMTMtMS43IDIwLjctNy4xIDI2LjF6bS00OS4xLTI1NC42Yy0zMC45LTMwLjktMzYuMy0zNi4zLTM0LjctMTU3LjIgMCAwIDEzNS45IDEzNS45IDEzNS45IDEzNS45LTEyMSAxLjYtMTI2LjQtMy44LTE1Ny40LTM0Ljd6bTE1Ny40IDM0LjdjMCAyMi44LTcuNiA0Ni44LTIyLjUgNzEuOEMzOTMuOCAzMTQgMzgyLjMgMzI1LjQgMzQ3IDM2MC43IDMyNS40IDM4Mi4zIDMxNCAzOTMuOCAyNzcuMyA0MTguMWMtMjUgMTQuOS00OS4xIDIyLjUtNzEuOCAyMi41LTE5LjIgMC0zNS4zLTUuMS00Ny42LTE3LjQtOC44LTguOC0xNC42LTIwLjQtMTcuMi0zNC41IDExNS44LTE4LjkgMTk5LjctMTAyLjggMjE4LjYtMjE4LjYgMTQuMSAyLjYgMjUuNiA4LjQgMzQuNSAxNy4yIDEyLjMgMTIuMyAxNy40IDI4LjMgMTcuNCAxNy42eiI+PC9wYXRoPjwvc3ZnPg==">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
+        // Progressive Web App - Service Worker Registration
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/sw.js').then(function(registration) {
+                    // Registration was successful
+                    console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                }, function(err) {
+                    // Registration failed
+                    console.log('ServiceWorker registration failed: ', err);
+                });
+            });
+        }
+
+        // Add install prompt for PWA
+        let deferredPrompt;
+        const installBanner = document.createElement('div');
+        
+        window.addEventListener('beforeinstallprompt', (e) => {
+            // Prevent Chrome 67 and earlier from automatically showing the prompt
+            e.preventDefault();
+            // Stash the event so it can be triggered later
+            deferredPrompt = e;
+            
+            // Create and show the install banner when the app loads
+            installBanner.className = 'fixed bottom-20 left-0 right-0 mx-auto max-w-xs bg-primary text-white p-4 rounded-lg shadow-lg flex items-center justify-between z-50';
+            installBanner.innerHTML = `
+                <div>
+                    <p class="font-bold">Installer Culture Play</p>
+                    <p class="text-sm">Jouez même hors connexion</p>
+                </div>
+                <div class="flex gap-2">
+                    <button id="install-btn" class="py-1 px-3 bg-white text-primary rounded-md text-sm font-medium">Installer</button>
+                    <button id="close-banner" class="py-1 px-2 text-white rounded-md text-sm">&times;</button>
+                </div>
+            `;
+            
+            setTimeout(() => {
+                document.body.appendChild(installBanner);
+                
+                document.getElementById('install-btn').addEventListener('click', (e) => {
+                    // Hide the banner
+                    installBanner.style.display = 'none';
+                    // Show the install prompt
+                    deferredPrompt.prompt();
+                    // Wait for the user to respond to the prompt
+                    deferredPrompt.userChoice.then((choiceResult) => {
+                        if (choiceResult.outcome === 'accepted') {
+                            console.log('User accepted the install prompt');
+                        } else {
+                            console.log('User dismissed the install prompt');
+                        }
+                        deferredPrompt = null;
+                    });
+                });
+                
+                document.getElementById('close-banner').addEventListener('click', (e) => {
+                    installBanner.style.display = 'none';
+                });
+            }, 3000);
+        });
+        
         tailwind.config = {
             darkMode: 'class',
             theme: {
@@ -2095,6 +2182,100 @@
                 e.preventDefault();
             }, { passive: false });
         });
+    </script>
+
+    <!-- Service Worker Script Content - Will be extracted and used as sw.js -->
+    <script id="service-worker-content" type="text/template">
+        // Service Worker for Culture Play PWA
+        const CACHE_NAME = 'culture-play-v1';
+        const urlsToCache = [
+            '/',
+            '/index.html',
+            '/sw.js'
+        ];
+
+        // Install event - Cache the essential resources
+        self.addEventListener('install', event => {
+            event.waitUntil(
+                caches.open(CACHE_NAME)
+                    .then(cache => {
+                        console.log('Opened cache');
+                        return cache.addAll(urlsToCache);
+                    })
+            );
+        });
+
+        // Activate event - Clean up old caches
+        self.addEventListener('activate', event => {
+            const cacheWhitelist = [CACHE_NAME];
+            event.waitUntil(
+                caches.keys().then(cacheNames => {
+                    return Promise.all(
+                        cacheNames.map(cacheName => {
+                            if (cacheWhitelist.indexOf(cacheName) === -1) {
+                                return caches.delete(cacheName);
+                            }
+                        })
+                    );
+                })
+            );
+        });
+
+        // Fetch event - Serve from cache, fallback to network
+        self.addEventListener('fetch', event => {
+            event.respondWith(
+                caches.match(event.request)
+                    .then(response => {
+                        // Cache hit - return response
+                        if (response) {
+                            return response;
+                        }
+                        
+                        // Clone the request
+                        const fetchRequest = event.request.clone();
+                        
+                        return fetch(fetchRequest).then(
+                            response => {
+                                // Check if valid response
+                                if (!response || response.status !== 200 || response.type !== 'basic') {
+                                    return response;
+                                }
+                                
+                                // Clone the response
+                                const responseToCache = response.clone();
+                                
+                                caches.open(CACHE_NAME)
+                                    .then(cache => {
+                                        cache.put(event.request, responseToCache);
+                                    });
+                                    
+                                return response;
+                            }
+                        );
+                    })
+            );
+        });
+    </script>
+
+    <!-- Extract Service Worker content and create Blob URL for registration -->
+    <script>
+        // Create a Blob with the Service Worker code and create a URL for it
+        if ('serviceWorker' in navigator) {
+            const swContent = document.getElementById('service-worker-content').textContent;
+            const swBlob = new Blob([swContent], {type: 'text/javascript'});
+            const swUrl = URL.createObjectURL(swBlob);
+            
+            // Override the Service Worker registration to use our Blob URL
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register(swUrl)
+                    .then(function(registration) {
+                        console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                    })
+                    .catch(function(err) {
+                        console.log('ServiceWorker registration failed: ', err);
+                    });
+            });
+        }
     </script>
 </body>
 </html>
