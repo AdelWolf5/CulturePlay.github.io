@@ -1439,14 +1439,17 @@
                 });
             });
             
+            // Global variable to track AI mode
+            let playingAgainstAI = false;
+            
             // Play vs AI or Player buttons
             document.getElementById('play-vs-player').addEventListener('click', () => {
-                // For demo purposes, go to game selection
+                playingAgainstAI = false;
                 showScreen(gameSelectionScreen);
             });
             
             document.getElementById('play-vs-ai').addEventListener('click', () => {
-                // For demo purposes, go to game selection
+                playingAgainstAI = true;
                 showScreen(gameSelectionScreen);
             });
             
@@ -1454,76 +1457,187 @@
             function initTicTacToe() {
                 const cells = document.querySelectorAll('.ttt-cell');
                 const resetButton = document.getElementById('reset-ttt');
-                let currentPlayer = 'X';
+                const playerOText = document.querySelector('.player-o .text-xl');
+                const playerXTurn = document.querySelector('.player-x .player-turn');
+                const playerOTurn = document.querySelector('.player-o .player-turn');
+
+                // États possibles du jeu
+                const GAME_STATE = {
+                    WAITING: 'waiting',
+                    X_TURN: 'x_turn',          // Tour du joueur X (humain)
+                    O_TURN: 'o_turn',          // Tour du joueur O (humain ou IA)
+                    X_WON: 'x_won',            // Le joueur X a gagné
+                    O_WON: 'o_won',            // Le joueur O a gagné
+                    DRAW: 'draw'               // Match nul
+                };
+                
+                // Initialiser les variables du jeu
+                let gameState = GAME_STATE.WAITING;
                 let gameBoard = ['', '', '', '', '', '', '', '', ''];
-                let gameActive = true;
+                let aiDifficulty = 2; // 1: Facile, 2: Moyen, 3: Difficile
+                let aiMoveInProgress = false; // Flag pour empêcher les actions pendant que l'IA joue
                 
-                // Clear the board
-                cells.forEach(cell => {
-                    cell.textContent = '';
-                    cell.addEventListener('click', handleCellClick);
-                });
+                // Mise à jour du texte si en mode IA
+                if (playingAgainstAI) {
+                    playerOText.textContent = "IA (O)";
+                    
+                    // Récupérer la difficulté depuis les paramètres s'ils existent
+                    const difficultyInput = document.querySelector('input[type="range"]');
+                    if (difficultyInput) {
+                        aiDifficulty = parseInt(difficultyInput.value);
+                    }
+                } else {
+                    playerOText.textContent = "Joueur O";
+                }
                 
-                // Update turn indicators
-                updateTurnIndicators();
-                
-                // Reset button
-                resetButton.addEventListener('click', resetTicTacToe);
-                
-                function handleCellClick() {
-                    const cellIndex = this.getAttribute('data-index');
+                // Initialiser le plateau de jeu
+                function initBoard() {
+                    // Vider le plateau
+                    gameBoard = ['', '', '', '', '', '', '', '', ''];
                     
-                    if (gameBoard[cellIndex] !== '' || !gameActive) {
-                        return;
-                    }
+                    // Réinitialiser l'affichage
+                    cells.forEach(cell => {
+                        cell.textContent = '';
+                        cell.classList.remove('bg-primary/20', 'text-primary', 'text-secondary');
+                    });
                     
-                    gameBoard[cellIndex] = currentPlayer;
-                    this.textContent = currentPlayer;
+                    // Retirer les anciens écouteurs et en ajouter des nouveaux
+                    cells.forEach(cell => {
+                        // Retirer tous les écouteurs existants (solution propre pour éviter les doublons)
+                        const newCell = cell.cloneNode(true);
+                        cell.parentNode.replaceChild(newCell, cell);
+                        
+                        // Ajouter un nouvel écouteur
+                        newCell.addEventListener('click', handleCellClick);
+                    });
                     
-                    // Add styling based on player
-                    if (currentPlayer === 'X') {
-                        this.classList.add('text-primary');
-                    } else {
-                        this.classList.add('text-secondary');
-                    }
-                    
-                    // Check for win or draw
-                    if (checkWin()) {
-                        gameActive = false;
-                        highlightWinner();
-                        setTimeout(() => {
-                            alert(`Le joueur ${currentPlayer} gagne!`);
-                        }, 100);
-                        return;
-                    }
-                    
-                    if (checkDraw()) {
-                        gameActive = false;
-                        setTimeout(() => {
-                            alert('Match nul!');
-                        }, 100);
-                        return;
-                    }
-                    
-                    // Switch player
-                    currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+                    // Commencer le jeu avec le tour du joueur X
+                    gameState = GAME_STATE.X_TURN;
                     updateTurnIndicators();
                 }
                 
-                function updateTurnIndicators() {
-                    const playerXTurn = document.querySelector('.player-x .player-turn');
-                    const playerOTurn = document.querySelector('.player-o .player-turn');
+                // Initialiser le jeu
+                initBoard();
+                
+                // Reset button
+                resetButton.addEventListener('click', () => {
+                    initBoard();
+                });
+                
+                // Fonction pour gérer les clics sur les cellules
+                function handleCellClick(event) {
+                    // Récupérer l'index de la cellule cliquée
+                    const cellIndex = event.target.getAttribute('data-index');
                     
-                    if (currentPlayer === 'X') {
-                        playerXTurn.classList.remove('hidden');
-                        playerOTurn.classList.add('hidden');
+                    // Vérifier si le clic est valide
+                    if (
+                        (gameState !== GAME_STATE.X_TURN && gameState !== GAME_STATE.O_TURN) || // Pas un tour de jeu actif
+                        gameBoard[cellIndex] !== '' || // Case déjà occupée
+                        aiMoveInProgress || // L'IA est en train de jouer
+                        (playingAgainstAI && gameState === GAME_STATE.O_TURN) // C'est le tour de l'IA en mode IA
+                    ) {
+                        return; // Ignorer le clic
+                    }
+                    
+                    // Déterminer le symbole à placer selon le tour actuel
+                    const currentSymbol = gameState === GAME_STATE.X_TURN ? 'X' : 'O';
+                    const colorClass = currentSymbol === 'X' ? 'text-primary' : 'text-secondary';
+                    
+                    // Jouer le coup du joueur
+                    makeMove(cellIndex, currentSymbol, colorClass);
+                    
+                    // Vérifier si le joueur a gagné
+                    if (checkWin(currentSymbol)) {
+                        gameState = currentSymbol === 'X' ? GAME_STATE.X_WON : GAME_STATE.O_WON;
+                        highlightWinner(currentSymbol);
+                        setTimeout(() => {
+                            alert(currentSymbol === 'X' ? "Joueur X a gagné!" : "Joueur O a gagné!");
+                        }, 100);
+                        return;
+                    }
+                    
+                    // Vérifier si c'est un match nul
+                    if (checkDraw()) {
+                        gameState = GAME_STATE.DRAW;
+                        setTimeout(() => {
+                            alert("Match nul!");
+                        }, 100);
+                        return;
+                    }
+                    
+                    // Passer au tour suivant
+                    if (playingAgainstAI && currentSymbol === 'X') {
+                        // Mode IA: passer au tour de l'IA après le joueur X
+                        gameState = GAME_STATE.O_TURN;
+                        updateTurnIndicators();
+                        
+                        // Empêcher les interactions pendant que l'IA joue
+                        aiMoveInProgress = true;
+                        
+                        // Simuler la "réflexion" de l'IA
+                        setTimeout(() => {
+                            // Jouer le coup de l'IA
+                            const aiMove = findBestMove();
+                            
+                            if (aiMove !== null) {
+                                makeMove(aiMove, 'O', 'text-secondary');
+                                
+                                // Vérifier si l'IA a gagné
+                                if (checkWin('O')) {
+                                    gameState = GAME_STATE.O_WON;
+                                    highlightWinner('O');
+                                    setTimeout(() => {
+                                        alert("L'IA a gagné!");
+                                    }, 100);
+                                } else if (checkDraw()) {
+                                    gameState = GAME_STATE.DRAW;
+                                    setTimeout(() => {
+                                        alert("Match nul!");
+                                    }, 100);
+                                } else {
+                                    // Revenir au tour du joueur
+                                    gameState = GAME_STATE.X_TURN;
+                                    updateTurnIndicators();
+                                }
+                            }
+                            
+                            // Réactiver les interactions
+                            aiMoveInProgress = false;
+                        }, 500);
                     } else {
-                        playerXTurn.classList.add('hidden');
-                        playerOTurn.classList.remove('hidden');
+                        // Mode 2 joueurs ou après le tour de l'IA: alterner entre X et O
+                        gameState = gameState === GAME_STATE.X_TURN ? GAME_STATE.O_TURN : GAME_STATE.X_TURN;
+                        updateTurnIndicators();
                     }
                 }
                 
-                function checkWin() {
+                // Fonction pour jouer un coup (utilisée par le joueur et l'IA)
+                function makeMove(cellIndex, symbol, colorClass) {
+                    // Mettre à jour le tableau de jeu
+                    gameBoard[cellIndex] = symbol;
+                    
+                    // Mettre à jour l'interface
+                    const cell = document.querySelector(`.ttt-cell[data-index="${cellIndex}"]`);
+                    cell.textContent = symbol;
+                    cell.classList.add(colorClass);
+                }
+                
+                function updateTurnIndicators() {
+                    // Selon l'état du jeu, afficher les indicateurs de tour appropriés
+                    if (gameState === GAME_STATE.X_TURN) {
+                        playerXTurn.classList.remove('hidden');
+                        playerOTurn.classList.add('hidden');
+                    } else if (gameState === GAME_STATE.O_TURN) {
+                        playerXTurn.classList.add('hidden');
+                        playerOTurn.classList.remove('hidden');
+                    } else {
+                        // Si le jeu est terminé, masquer les deux indicateurs
+                        playerXTurn.classList.add('hidden');
+                        playerOTurn.classList.add('hidden');
+                    }
+                }
+                
+                function checkWin(player) {
                     const winPatterns = [
                         [0, 1, 2], [3, 4, 5], [6, 7, 8], // rows
                         [0, 3, 6], [1, 4, 7], [2, 5, 8], // columns
@@ -1532,7 +1646,7 @@
                     
                     return winPatterns.some(pattern => {
                         return pattern.every(index => {
-                            return gameBoard[index] === currentPlayer;
+                            return gameBoard[index] === player;
                         });
                     });
                 }
@@ -1541,7 +1655,7 @@
                     return !gameBoard.includes('');
                 }
                 
-                function highlightWinner() {
+                function highlightWinner(player) {
                     const winPatterns = [
                         [0, 1, 2], [3, 4, 5], [6, 7, 8], // rows
                         [0, 3, 6], [1, 4, 7], [2, 5, 8], // columns
@@ -1550,21 +1664,142 @@
                     
                     for (const pattern of winPatterns) {
                         if (
-                            gameBoard[pattern[0]] === currentPlayer &&
-                            gameBoard[pattern[1]] === currentPlayer &&
-                            gameBoard[pattern[2]] === currentPlayer
+                            gameBoard[pattern[0]] === player &&
+                            gameBoard[pattern[1]] === player &&
+                            gameBoard[pattern[2]] === player
                         ) {
+                            // Sélectionner les cellules par leurs attributs data-index
                             pattern.forEach(index => {
-                                cells[index].classList.add('bg-primary/20');
+                                const cell = document.querySelector(`.ttt-cell[data-index="${index}"]`);
+                                if (cell) {
+                                    cell.classList.add('bg-primary/20');
+                                }
                             });
                             break;
                         }
                     }
                 }
                 
+                // Algorithme pour déterminer le meilleur coup de l'IA
+                function findBestMove() {
+                    // Vérifier s'il y a des cases vides disponibles
+                    const emptyCells = [];
+                    for (let i = 0; i < 9; i++) {
+                        if (gameBoard[i] === '') {
+                            emptyCells.push(i);
+                        }
+                    }
+                    
+                    // S'il n'y a pas de cases vides, retourner null
+                    if (emptyCells.length === 0) {
+                        return null;
+                    }
+                    
+                    // Si la difficulté est facile, jouer aléatoirement 70% du temps
+                    if (aiDifficulty === 1 && Math.random() < 0.7) {
+                        return findRandomMove();
+                    }
+                    
+                    // Si la difficulté est moyenne, jouer aléatoirement 30% du temps
+                    if (aiDifficulty === 2 && Math.random() < 0.3) {
+                        return findRandomMove();
+                    }
+                    
+                    // Utiliser l'algorithme minimax pour les coups optimaux
+                    let bestScore = -Infinity;
+                    let bestMove = emptyCells[0]; // Valeur par défaut pour éviter les null
+                    
+                    for (let i = 0; i < 9; i++) {
+                        // Seulement tester les cases vides
+                        if (gameBoard[i] === '') {
+                            // Essayer ce coup
+                            gameBoard[i] = 'O';
+                            
+                            // Évaluer ce coup avec minimax
+                            let score = minimax(gameBoard, 0, false);
+                            
+                            // Annuler le coup
+                            gameBoard[i] = '';
+                            
+                            // Mettre à jour le meilleur coup si nécessaire
+                            if (score > bestScore) {
+                                bestScore = score;
+                                bestMove = i;
+                            }
+                        }
+                    }
+                    
+                    return bestMove;
+                }
+                
+                function findRandomMove() {
+                    const availableMoves = [];
+                    for (let i = 0; i < 9; i++) {
+                        if (gameBoard[i] === '') {
+                            availableMoves.push(i);
+                        }
+                    }
+                    
+                    if (availableMoves.length === 0) return null;
+                    return availableMoves[Math.floor(Math.random() * availableMoves.length)];
+                }
+                
+                function minimax(board, depth, isMaximizing) {
+                    // Vérifier si le jeu est terminé
+                    const scores = {
+                        'X': -1, // Humain gagne
+                        'O': 1,  // IA gagne
+                        'tie': 0 // Match nul
+                    };
+                    
+                    // Vérifier si quelqu'un a gagné
+                    if (checkWinForPlayer(board, 'X')) return scores['X'];
+                    if (checkWinForPlayer(board, 'O')) return scores['O'];
+                    if (!board.includes('')) return scores['tie'];
+                    
+                    if (isMaximizing) {
+                        let bestScore = -Infinity;
+                        for (let i = 0; i < 9; i++) {
+                            if (board[i] === '') {
+                                board[i] = 'O';
+                                let score = minimax(board, depth + 1, false);
+                                board[i] = '';
+                                bestScore = Math.max(score, bestScore);
+                            }
+                        }
+                        return bestScore;
+                    } else {
+                        let bestScore = Infinity;
+                        for (let i = 0; i < 9; i++) {
+                            if (board[i] === '') {
+                                board[i] = 'X';
+                                let score = minimax(board, depth + 1, true);
+                                board[i] = '';
+                                bestScore = Math.min(score, bestScore);
+                            }
+                        }
+                        return bestScore;
+                    }
+                }
+                
+                function checkWinForPlayer(board, player) {
+                    const winPatterns = [
+                        [0, 1, 2], [3, 4, 5], [6, 7, 8], // rows
+                        [0, 3, 6], [1, 4, 7], [2, 5, 8], // columns
+                        [0, 4, 8], [2, 4, 6]             // diagonals
+                    ];
+                    
+                    return winPatterns.some(pattern => {
+                        return pattern.every(index => {
+                            return board[index] === player;
+                        });
+                    });
+                }
+                
                 function resetTicTacToe() {
                     gameBoard = ['', '', '', '', '', '', '', '', ''];
                     gameActive = true;
+                    aiTurn = false; // Réinitialiser le tour de l'IA
                     currentPlayer = 'X';
                     
                     cells.forEach(cell => {
